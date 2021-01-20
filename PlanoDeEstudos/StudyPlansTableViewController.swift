@@ -47,6 +47,8 @@ class StudyPlansTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            sm.remove(index: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .bottom)
         }
     }
 

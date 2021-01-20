@@ -13,10 +13,14 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    private let center = UNUserNotificationCenter.current()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         window?.tintColor = UIColor(named: "main")
+        
+        setupNotificationCenter()
+        
         return true
     }
 
@@ -41,5 +45,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    fileprivate func setupNotificationCenter() {
+        center.delegate = self
+        center.getNotificationSettings { (settings) in
+            
+            switch settings.authorizationStatus {
+                case .notDetermined:
+                    self.requestPermission()
+                    break
+                case .denied:
+                    self.deniedPermission()
+                    break
+                default:
+                   self.authorizedPermission()
+                   break
+            }
+        }
+    }
 
+    fileprivate func requestPermission() {
+        
+        let options :UNAuthorizationOptions = [.alert, .sound, .badge, .carPlay]
+        
+        center.requestAuthorization(options: options) { (success, error) in
+            
+            if success {
+                print("success")
+            } else {
+                print(error?.localizedDescription ?? "default error")
+            }
+        }
+    }
+    
+    fileprivate func deniedPermission() {
+        print("deniedPermission")
+    }
+    
+    fileprivate func authorizedPermission() {
+        print("authorizedPermission")
+        let confirmAction = UNNotificationAction(identifier: "Confirm", title: "Já Estudei", options: [.foreground])
+        
+        let deleteAction = UNNotificationAction(identifier: "Cancel", title: "Cancelar", options: [])
+        
+        let category = UNNotificationCategory(identifier: "Lembrete", actions: [confirmAction, deleteAction], intentIdentifiers: [], hiddenPreviewsBodyPlaceholder: "", options: [.customDismissAction])
+        
+        center.setNotificationCategories([category])
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
 }
