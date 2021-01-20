@@ -41,7 +41,11 @@ class StudyPlanViewController: UIViewController {
         content.body = "Estudar: \(studyPlan.section)"
         content.categoryIdentifier = content.title
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 15, repeats: false)
+        let dateComponent = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: studyPlan.date)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponent, repeats: false)
+        
+        //let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 15, repeats: false)
         
         let request = UNNotificationRequest(identifier: studyPlan.id, content: content, trigger: trigger)
         
