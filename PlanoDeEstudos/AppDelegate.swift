@@ -114,6 +114,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             print("Dismiss notificação")
         default:
             print("Usuário confirmou que já estudou")
+            NotificationCenter.default.post(name: StudyManager.CONFIRMED, object: nil, userInfo: ["id": id])
             break
         }
         

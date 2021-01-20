@@ -7,9 +7,12 @@
 //
 
 import Foundation
+import UserNotifications
 
 class StudyManager{
 
+    static let CONFIRMED = NSNotification.Name(rawValue: "confirmed")
+    
     private static let KEY = "KEY"
     
     static let shared = StudyManager()
@@ -37,7 +40,22 @@ class StudyManager{
     }
     
     func remove(index: Int) {
+        
+        let center = UNUserNotificationCenter.current()
+        
+        let id = self.studyPlans[index].id
+        
+        center.removePendingNotificationRequests(withIdentifiers: [id])
+        
         self.studyPlans.remove(at: index)
         save()
+    }
+    
+    func setDone(id: String) {
+        
+        if let studyPlan = studyPlans.first(where: {$0.id == id}) {
+            studyPlan.done = true
+            save()
+        }
     }
 }

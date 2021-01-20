@@ -12,7 +12,7 @@ class StudyPlan: Codable {
     let course: String
     let section: String
     let date: Date
-    let done: Bool
+    var done: Bool
     let id: String
     
     init(course: String, section: String, date:Date, done: Bool, id:String) {

@@ -22,6 +22,9 @@ class StudyPlansTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onReceive(notificacion:)),
+                                               name: StudyManager.CONFIRMED, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -41,6 +44,7 @@ class StudyPlansTableViewController: UITableViewController {
         
         cell.textLabel?.text = studyPlan.course
         cell.detailTextLabel?.text = dateFormatter.string(from: studyPlan.date)
+        cell.backgroundColor = studyPlan.done ? .green : .white
         
         return cell
     }
@@ -52,5 +56,11 @@ class StudyPlansTableViewController: UITableViewController {
         }
     }
 
-
+    @objc private func onReceive(notificacion: Notification) {
+        
+        if let userInfo = notificacion.userInfo, let id = userInfo["id"] as? String {
+            sm.setDone(id: id)
+            tableView.reloadData()
+        }
+    }
 }
